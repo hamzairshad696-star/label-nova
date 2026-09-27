@@ -1,0 +1,142 @@
+@import "tailwindcss";
+
+/*
+ * Label Nova design tokens — "Printed precision".
+ * Colours, radii, type scale and motion live here, so a rebrand is one file.
+ */
+@theme {
+  --color-paper: #f4f5f2;
+  --color-surface: #ffffff;
+  --color-sunken: #eceee9;
+  --color-ink: #15171c;
+  --color-ink-muted: #5a606b;
+  --color-ink-faint: #8a909a;
+  --color-line: #e1e3de;
+  --color-line-strong: #cfd2cb;
+
+  --color-nova: #4338e0;
+  --color-nova-strong: #3329c2;
+  --color-nova-soft: #ecebfc;
+
+  --color-success: #17804f;
+  --color-success-soft: #e3f3ea;
+  --color-warning: #a86a12;
+  --color-warning-soft: #fbf0dc;
+  --color-danger: #c33a2e;
+  --color-danger-soft: #fbe7e4;
+  --color-info: #2563c9;
+  --color-info-soft: #e5eefb;
+
+  --font-sans: "Hanken Grotesk Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.55;
+  --text-h3: 1.375rem;
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.015em;
+  --text-h2: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+  --text-h2--line-height: 1.12;
+  --text-h2--letter-spacing: -0.025em;
+  --text-display: clamp(2.5rem, 1.4rem + 4.6vw, 4.75rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+
+  --radius-paper: 3px;
+  --radius-control: 6px;
+  --radius-menu: 10px;
+  --radius-panel: 16px;
+
+  --shadow-lift: 0 1px 2px rgb(21 23 28 / 0.06), 0 12px 32px -8px rgb(21 23 28 / 0.22);
+  --shadow-menu: 0 1px 2px rgb(21 23 28 / 0.06), 0 8px 24px -6px rgb(21 23 28 / 0.18);
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  --animate-feed: feed 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) 150ms both;
+  --animate-ink: ink 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes feed {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes ink {
+    from {
+      opacity: 0;
+      filter: blur(1.5px);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+    }
+  }
+}
+
+/* Plain CSS variables for inline styles and SVG (e.g. var(--paper)). */
+:root {
+  --paper: var(--color-paper);
+  --surface: var(--color-surface);
+  --ink: var(--color-ink);
+  --line: var(--color-line);
+  --line-strong: var(--color-line-strong);
+  --nova: var(--color-nova);
+  --nova-soft: var(--color-nova-soft);
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-nova);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-nova-soft);
+    color: var(--color-ink);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

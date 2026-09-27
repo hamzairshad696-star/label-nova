@@ -44,6 +44,7 @@ src/app/(auth)/                        Login, register, forgot and reset passwor
 src/app/app/, src/app/admin/           Protected areas (full dashboard shell arrives in Phase 3)
 src/app/api/auth/[...all]/             Better Auth endpoints
 src/app/api/me, api/users              Examples of permission-checked API routes
+src/app/app/                           Signed-in workspace (layout + dashboard)
 src/proxy.ts                           Redirects signed-out visitors (optimistic check)
 src/server/auth/                       Auth config, permission catalog, getActor/assertPermission
 src/server/db/                         Drizzle schema and client
@@ -60,17 +61,19 @@ src/config/plans.ts                    Plan display copy (moves to the pricing t
 src/lib/barcode/code128.ts             Code 128 encoder, shared by SVG preview and future PDF renderer
 ```
 
-## Deploying to Vercel + Neon
+## Deploying to Vercel + Neon (no local install needed)
 
-1. Create a Neon project. Copy the **pooled** connection string to `DATABASE_URL` and the
-   **direct** one to `DATABASE_URL_UNPOOLED`.
-2. Push to GitHub and import the repository in Vercel.
-3. Add environment variables in Vercel:
-   - `DATABASE_URL`
-   - `BETTER_AUTH_SECRET` (generate with `openssl rand -base64 32`)
-   - `BETTER_AUTH_URL` and `NEXT_PUBLIC_SITE_URL`, both set to your production URL
-   - `RESEND_API_KEY` and `EMAIL_FROM`
-4. From your machine, with production env vars loaded, run once:
-   `npm run db:migrate && npm run db:bootstrap`, then
-   `ADMIN_EMAIL=… ADMIN_PASSWORD=… npm run db:create-admin`.
-5. Deploy. Builds don't need database access; secrets are only read at runtime.
+1. Create a Neon project. Copy the **pooled** connection string to `DATABASE_URL`
+   (optionally the **direct** one to `DATABASE_URL_UNPOOLED`, used for migrations).
+2. Push to GitHub and import the repository in Vercel (Framework: Next.js, Root Directory: `./`,
+   leave Build Command empty so Vercel uses the `vercel-build` script).
+3. Add environment variables in Vercel (Production and Preview):
+   - `DATABASE_URL` (required)
+   - `BETTER_AUTH_SECRET` (required, at least 32 random characters)
+   - `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ characters), optional `ADMIN_NAME` — creates your first admin on the next deploy
+   - `BETTER_AUTH_URL` and `NEXT_PUBLIC_SITE_URL` — optional; set both to your final URL once you have a custom domain
+   - `RESEND_API_KEY` and `EMAIL_FROM` — needed for password-reset emails in production
+4. Deploy. Every Vercel build runs `scripts/deploy-db.ts` first: it applies migrations, creates roles
+   and permissions, and creates the admin if `ADMIN_EMAIL`/`ADMIN_PASSWORD` are set. All steps are
+   idempotent. Set `SKIP_DB_SETUP=true` to turn this off.
+5. After your admin exists, you can delete `ADMIN_PASSWORD` from Vercel.

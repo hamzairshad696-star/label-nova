@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "tsx scripts/deploy-db.ts && next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test src/lib/barcode/code128.test.ts",
@@ -13,7 +14,8 @@
     "db:bootstrap": "tsx --env-file-if-exists=.env.local scripts/bootstrap.ts",
     "db:create-admin": "tsx --env-file-if-exists=.env.local scripts/create-admin.ts",
     "db:seed": "tsx --env-file-if-exists=.env.local scripts/seed.ts",
-    "db:studio": "node --env-file-if-exists=.env.local node_modules/drizzle-kit/bin.cjs studio"
+    "db:studio": "node --env-file-if-exists=.env.local node_modules/drizzle-kit/bin.cjs studio",
+    "db:deploy": "tsx --env-file-if-exists=.env.local scripts/deploy-db.ts"
   },
   "dependencies": {
     "@fontsource-variable/hanken-grotesk": "^5.3.0",
