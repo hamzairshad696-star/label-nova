@@ -4,8 +4,9 @@
  *
  *   1. applies SQL migrations from ./drizzle           (safe to repeat)
  *   2. creates roles, permissions and default grants    (safe to repeat)
- *   3. creates the first admin, only if ADMIN_EMAIL and ADMIN_PASSWORD are set
- *      and that email doesn't exist yet                 (never changes an existing user)
+ *   3. admin account, driven by ADMIN_EMAIL (see scripts/_admin.ts):
+ *      - ADMIN_EMAIL only: an account that already registered with that email becomes ADMIN
+ *      - ADMIN_EMAIL + ADMIN_PASSWORD: creates the admin, or resets its password if it differs
  *
  * Without DATABASE_URL it skips with a warning, so the site itself still builds.
  */
@@ -14,7 +15,7 @@ import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
 import * as schema from "../src/server/db/schema";
 import { bootstrapAccess } from "./_bootstrap";
-import { createUserWithRole } from "./_users";
+import { ensureAdmin } from "./_admin";
 
 async function main() {
   const url = process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
@@ -36,15 +37,12 @@ async function main() {
     const r = await bootstrapAccess(db);
     console.log(`[deploy-db] Access ready: ${r.roles} roles, ${r.permissions} permissions, ${r.granted} new grants.`);
 
-    const { ADMIN_EMAIL: email, ADMIN_PASSWORD: password, ADMIN_NAME: name = "Administrator" } = process.env;
-    if (email && password) {
-      if (password.length < 12) {
-        console.warn("[deploy-db] ADMIN_PASSWORD must be at least 12 characters — admin not created.");
-      } else {
-        const { created } = await createUserWithRole(db, { name, email, password, role: "ADMIN" });
-        console.log(created ? `[deploy-db] Admin ${email} created.` : `[deploy-db] Admin ${email} already exists — unchanged.`);
-      }
-    }
+    await ensureAdmin(db, {
+      email: process.env.ADMIN_EMAIL,
+      password: process.env.ADMIN_PASSWORD,
+      name: process.env.ADMIN_NAME,
+      log: (m) => console.log(`[deploy-db] ${m}`),
+    });
   } finally {
     await pool.end();
   }
