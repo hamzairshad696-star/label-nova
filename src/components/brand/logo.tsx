@@ -1,29 +1,46 @@
 import { cn } from "@/lib/cn";
 
 /**
- * Label Nova mark: a folded-corner label with a four-point spark (the "nova")
- * where a shipping tag's eyelet would sit.
+ * Label Nova mark: a four-point nova inside an orbit, with the amber parcel riding the orbit.
+ * The orbit is the route; the star is the platform at its centre.
  */
-export function LogoMark({ className }: { className?: string }) {
+export function LogoMark({ className, orbitClassName }: { className?: string; orbitClassName?: string }) {
   return (
-    <svg viewBox="0 0 32 32" aria-hidden="true" className={cn("size-7 shrink-0", className)}>
-      <path d="M6 4h14.5L27 10.5V28H6z" fill="currentColor" />
-      <path d="M20.5 4v6.5H27" fill="none" stroke="var(--paper)" strokeWidth="1.5" />
+    <svg viewBox="0 0 32 32" aria-hidden="true" className={cn("size-8 shrink-0", className)}>
+      <rect width="32" height="32" rx="9" fill="#4b3fea" />
       <path
-        d="M14 9.8c.45 2.7 1.4 3.65 4.1 4.1-2.7.45-3.65 1.4-4.1 4.1-.45-2.7-1.4-3.65-4.1-4.1 2.7-.45 3.65-1.4 4.1-4.1z"
-        fill="#8f87ff"
+        d="M16 6.5C16.8 13.2 18.8 15.2 25.5 16 18.8 16.8 16.8 18.8 16 25.5 15.2 18.8 13.2 16.8 6.5 16 13.2 15.2 15.2 13.2 16 6.5Z"
+        fill="#fff"
       />
-      <rect x="10" y="21" width="12" height="1.6" rx=".8" fill="var(--paper)" opacity=".55" />
-      <rect x="10" y="24" width="8" height="1.6" rx=".8" fill="var(--paper)" opacity=".35" />
+      <ellipse
+        className={orbitClassName}
+        cx="16"
+        cy="16"
+        rx="12.5"
+        ry="5"
+        transform="rotate(-28 16 16)"
+        fill="none"
+        stroke="#fff"
+        strokeOpacity=".55"
+        strokeWidth="1.1"
+        strokeDasharray="44 60"
+        strokeLinecap="round"
+      />
+      <circle cx="26.2" cy="11.2" r="2" fill="#ffb13b" />
     </svg>
   );
 }
 
-export function Logo({ className }: { className?: string }) {
+export function Wordmark({ className }: { className?: string }) {
+  return <span className={cn("font-semibold tracking-[0.16em] uppercase", className)}>Label Nova</span>;
+}
+
+/** Full lockup. `tone="dark"` is for midnight backgrounds. */
+export function Logo({ className, tone = "light" }: { className?: string; tone?: "light" | "dark" }) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5 text-ink", className)}>
+    <span className={cn("inline-flex items-center gap-2.5", tone === "dark" ? "text-white" : "text-ink", className)}>
       <LogoMark />
-      <span className="text-[1.0625rem] font-semibold tracking-[-0.02em]">Label Nova</span>
+      <Wordmark className="text-[0.9375rem]" />
     </span>
   );
 }

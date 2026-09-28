@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useId, useRef, useState } from "react";
 import { Logo } from "@/components/brand/logo";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -9,19 +10,22 @@ import { mainNav } from "@/config/site";
 import { cn } from "@/lib/cn";
 
 export function SiteHeader() {
-  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const panelId = useId();
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  // Close on navigation.
+  useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
@@ -30,25 +34,26 @@ export function SiteHeader() {
     };
   }, [open]);
 
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 transition-[background-color,border-color] duration-200",
-        scrolled || open ? "border-b border-line bg-paper/90 backdrop-blur-md" : "border-b border-transparent",
-      )}
-    >
+    <header className="sticky top-0 z-50 border-b border-midnight-line bg-midnight text-midnight-ink">
       <Container className="flex h-16 items-center justify-between gap-6">
         <Link href="/" aria-label="Label Nova home" className="rounded-control">
-          <Logo />
+          <Logo tone="dark" />
         </Link>
 
-        <nav aria-label="Main" className="hidden lg:block">
-          <ul className="flex items-center gap-1">
+        <nav aria-label="Main" className="hidden xl:block">
+          <ul className="flex items-center gap-0.5">
             {mainNav.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="rounded-control px-3 py-2 text-[0.9375rem] text-ink-muted transition-colors hover:text-ink"
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                  className={cn(
+                    "rounded-control px-2.5 py-2 text-[0.875rem] transition-colors",
+                    isActive(item.href) ? "text-white" : "text-midnight-muted hover:text-white",
+                  )}
                 >
                   {item.label}
                 </Link>
@@ -57,62 +62,63 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
-          <ButtonLink href="/login" variant="ghost" size="sm">
-            Log in
+        <div className="flex items-center gap-2">
+          <Link
+            href="/login"
+            className="hidden rounded-control px-3 py-2 text-[0.875rem] font-medium text-midnight-ink hover:text-white sm:inline-flex"
+          >
+            Sign in
+          </Link>
+          <ButtonLink href="/request-access" size="sm" variant="accent" className="hidden sm:inline-flex">
+            Get started
           </ButtonLink>
-          <ButtonLink href="/request-access" size="sm">
-            Request access
-          </ButtonLink>
+          <button
+            ref={toggleRef}
+            type="button"
+            aria-expanded={open}
+            aria-controls={panelId}
+            onClick={() => setOpen((v) => !v)}
+            className="inline-flex size-10 items-center justify-center rounded-control text-white hover:bg-white/10 xl:hidden"
+          >
+            <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+            <svg viewBox="0 0 20 20" className="size-5" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              {open ? <path d="M5 5l10 10M15 5L5 15" /> : <path d="M3 6h14M3 10h14M3 14h14" />}
+            </svg>
+          </button>
         </div>
-
-        <button
-          type="button"
-          className="-mr-2 inline-flex size-10 items-center justify-center rounded-control lg:hidden"
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setOpen((v) => !v)}
-        >
-          <svg viewBox="0 0 20 20" className="size-5" aria-hidden="true">
-            {open ? (
-              <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            ) : (
-              <path d="M3 6.5h14M3 13.5h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            )}
-          </svg>
-        </button>
       </Container>
 
-      {open ? (
-        <div id="mobile-nav" className="h-[calc(100dvh-4rem)] overflow-y-auto border-t border-line bg-paper lg:hidden">
-          <Container className="flex h-full flex-col py-6">
-            <nav aria-label="Mobile">
-              <ul className="divide-y divide-line">
-                {mainNav.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className="flex py-4 text-xl font-medium tracking-[-0.01em]"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-            <div className="mt-auto grid gap-3 pt-8">
-              <ButtonLink href="/request-access" size="lg" onClick={() => setOpen(false)}>
-                Request access
-              </ButtonLink>
-              <ButtonLink href="/login" variant="secondary" size="lg" onClick={() => setOpen(false)}>
-                Log in
-              </ButtonLink>
-            </div>
-          </Container>
-        </div>
-      ) : null}
+      <div
+        id={panelId}
+        hidden={!open}
+        className="fixed inset-x-0 top-16 bottom-0 overflow-y-auto border-t border-midnight-line bg-midnight xl:hidden"
+      >
+        <Container className="flex min-h-full flex-col py-6">
+          <nav aria-label="Main">
+            <ul className="grid">
+              {mainNav.map((item) => (
+                <li key={item.href} className="border-b border-midnight-line">
+                  <Link
+                    href={item.href}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    className="flex py-4 text-[1.125rem] text-midnight-ink hover:text-white"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div className="mt-auto grid gap-3 pt-8">
+            <ButtonLink href="/request-access" size="lg" variant="accent">
+              Get started
+            </ButtonLink>
+            <ButtonLink href="/login" size="lg" variant="secondary">
+              Sign in
+            </ButtonLink>
+          </div>
+        </Container>
+      </div>
     </header>
   );
 }

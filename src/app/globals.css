@@ -5,22 +5,35 @@
  * Colours, radii, type scale and motion live here, so a rebrand is one file.
  */
 @theme {
-  --color-paper: #f4f5f2;
+  /* Light surfaces (app, admin, page bodies) */
+  --color-paper: #f5f6fa;
   --color-surface: #ffffff;
-  --color-sunken: #eceee9;
-  --color-ink: #15171c;
-  --color-ink-muted: #5a606b;
-  --color-ink-faint: #8a909a;
-  --color-line: #e1e3de;
-  --color-line-strong: #cfd2cb;
+  --color-sunken: #eceef4;
+  --color-ink: #0c1224;
+  --color-ink-muted: #525a6f;
+  --color-ink-faint: #666d82;
+  --color-line: #e2e5ee;
+  --color-line-strong: #cbd0dd;
 
-  --color-nova: #4338e0;
-  --color-nova-strong: #3329c2;
-  --color-nova-soft: #ecebfc;
+  /* Brand */
+  --color-nova: #4b3fea;
+  --color-nova-strong: #3a2fcb;
+  --color-nova-soft: #ecebfd;
+  --color-nova-glow: #8c84ff;
 
-  --color-success: #17804f;
+  /* Night network: hero and page bands */
+  --color-midnight: #0a1330;
+  --color-midnight-raised: #111d45;
+  --color-midnight-line: rgb(255 255 255 / 0.09);
+  --color-midnight-ink: #eef0fa;
+  --color-midnight-muted: #9aa3c4;
+
+  /* The parcel. The only warm colour on the site; use it for the thing that moves. */
+  --color-beacon: #ffb13b;
+
+  --color-success: #13703f;
   --color-success-soft: #e3f3ea;
-  --color-warning: #a86a12;
+  --color-warning: #8a560b;
   --color-warning-soft: #fbf0dc;
   --color-danger: #c33a2e;
   --color-danger-soft: #fbe7e4;
@@ -38,7 +51,7 @@
   --text-h2: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
   --text-h2--line-height: 1.12;
   --text-h2--letter-spacing: -0.025em;
-  --text-display: clamp(2.5rem, 1.4rem + 4.6vw, 4.75rem);
+  --text-display: clamp(2.75rem, 1.2rem + 5.4vw, 5.5rem);
   --text-display--line-height: 1.02;
   --text-display--letter-spacing: -0.035em;
 
@@ -85,7 +98,99 @@
   --line-strong: var(--color-line-strong);
   --nova: var(--color-nova);
   --nova-soft: var(--color-nova-soft);
+  --midnight: var(--color-midnight);
+  --beacon: var(--color-beacon);
   color-scheme: light;
+}
+
+/* ---------- Brand intro (first visit per session) ---------- */
+.ln-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: var(--color-midnight);
+  animation: ln-intro-out 450ms var(--ease-out) 1550ms forwards;
+}
+[data-intro="off"] .ln-intro {
+  display: none;
+}
+.ln-intro__lockup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.ln-intro__mark {
+  width: 3.25rem;
+  height: 3.25rem;
+  animation: ln-mark-in 700ms var(--ease-out) both;
+}
+.ln-intro__orbit {
+  stroke-dasharray: 44 60;
+  stroke-dashoffset: 44;
+  animation: ln-draw 700ms var(--ease-out) 250ms forwards;
+}
+.ln-intro__word {
+  font-size: 1.5rem;
+  clip-path: inset(0 100% 0 0);
+  /* Both animations in one declaration: a second rule setting animation would override the first. */
+  animation:
+    ln-reveal 650ms var(--ease-out) 450ms forwards,
+    ln-sweep 900ms ease-in-out 850ms forwards;
+}
+.ln-sweep {
+  background: linear-gradient(100deg, #c9ceef 42%, #ffffff 50%, #c9ceef 58%) 100% 0 / 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@keyframes ln-intro-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes ln-mark-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-20deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ln-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes ln-reveal {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes ln-sweep {
+  to {
+    background-position: 0 0;
+  }
+}
+
+/* ---------- Hero route ---------- */
+.ln-route-static {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ln-route-live {
+    display: none;
+  }
+  .ln-route-static {
+    display: inline;
+  }
+  .ln-intro {
+    display: none;
+  }
 }
 
 @layer base {

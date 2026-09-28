@@ -1,68 +1,44 @@
-import { Container } from "@/components/ui/container";
-import { SectionHeader } from "@/components/ui/section-header";
-
 export const faqs = [
   {
-    q: "What printers does Label Nova work with?",
-    a: "Any printer that can print a PDF. Thermal printers like Zebra, Rollo and DYMO work best for 4×6 labels; laser and inkjet printers work with sheet layouts.",
+    q: "How do I get an account?",
+    a: "Accounts are created by the Label Nova team rather than by public sign-up, so each one starts with the right role, prices and limits. Request access from the website or message us on WhatsApp.",
   },
   {
-    q: "Can I use my own logo and layout?",
-    a: "Yes. On Growth and Scale you can add your logo and build custom layouts in the designer, on top of templates your admin has approved.",
+    q: "Are Label Nova labels valid carrier postage?",
+    a: "Carrier postage is only valid when it is bought from the carrier or an authorised partner. Label Nova will buy USPS, UPS and FedEx labels through such a partner, so tracking numbers and barcodes come from the carrier. Until that connection is live, carrier postage is not offered.",
   },
   {
-    q: "What happens to rows with errors in a bulk upload?",
-    a: "They're skipped and never charged. You see each error by row and field, can download just the failed rows as a CSV, fix them and upload them again.",
+    q: "Can I run my own customers as a dealer or reseller?",
+    a: "Yes. Dealer and reseller accounts exist today and are scoped so each partner sees only their own customers. Per-customer pricing and wallet transfers arrive with the pricing engine and wallet.",
   },
   {
-    q: "Are these labels valid postage for carriers?",
-    a: "Label Nova creates the label document. Carrier postage must be purchased from the carrier or an authorised partner; carrier integrations fill the tracking number and barcode from the carrier's response so labels scan correctly in their network.",
+    q: "How is pricing set?",
+    a: "Prices are set per account by the admin, with separate customer, dealer and reseller rates by carrier, service, weight and zone. Nothing is hard-coded, so a price change applies to the next shipment without a software update.",
   },
   {
-    q: "How does the wallet work?",
-    a: "You add funds, and each generated label is deducted at your plan's price. Bulk jobs reserve the estimated amount first and release anything unused when the job finishes.",
+    q: "What printers work with Label Nova?",
+    a: "Labels are produced as PDFs, so any printer that prints a PDF works. Thermal printers suit 4×6 labels; laser and inkjet printers suit A4 and Letter sheets.",
   },
   {
-    q: "Can I resell Label Nova to my own clients?",
-    a: "Yes. Dealer and reseller accounts on the Scale plan can create client accounts, set their own prices and manage each client's wallet.",
+    q: "What can I use today?",
+    a: "The homepage lists every feature with its current status. Features marked In development or Needs carrier partner are not yet live, and we do not charge for anything that is not.",
   },
 ];
 
-export function Faq() {
+export function FaqList() {
   return (
-    <section id="faq" aria-labelledby="faq-title" className="border-t border-line bg-surface py-24 lg:py-32">
-      <Container className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-        <SectionHeader
-          id="faq-title"
-          title="Questions, answered."
-          intro={
-            <>
-              Something else on your mind?{" "}
-              <a href="mailto:hello@labelnova.com" className="text-nova underline-offset-4 hover:underline">
-                Email the team
-              </a>
-              .
-            </>
-          }
-        />
-        <div className="divide-y divide-line border-y border-line">
-          {faqs.map((f) => (
-            <details key={f.q} className="group">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[1.0625rem] font-medium [&::-webkit-details-marker]:hidden">
-                {f.q}
-                <svg
-                  viewBox="0 0 20 20"
-                  className="size-5 shrink-0 text-ink-muted transition-transform duration-200 group-open:rotate-45"
-                  aria-hidden="true"
-                >
-                  <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </summary>
-              <p className="max-w-[60ch] pb-6 text-[0.9375rem] text-ink-muted">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </Container>
-    </section>
+    <div className="divide-y divide-line border-y border-line">
+      {faqs.map((f) => (
+        <details key={f.q} className="group">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-[1.0625rem] font-medium [&::-webkit-details-marker]:hidden">
+            {f.q}
+            <svg viewBox="0 0 20 20" className="size-5 shrink-0 text-ink-muted transition-transform duration-200 group-open:rotate-45" aria-hidden="true">
+              <path d="M10 4v12M4 10h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </summary>
+          <p className="max-w-[44rem] pb-6 text-ink-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
   );
 }

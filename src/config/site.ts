@@ -9,16 +9,56 @@ function resolveSiteUrl(): string {
 
 export const siteConfig = {
   name: "Label Nova",
-  title: "Label Nova — Labels, reimagined",
+  title: "Label Nova — Shipping, reimagined",
   description:
-    "Create, customize, manage and generate professional shipping, product and warehouse labels — one label or ten thousand, as print-ready vector PDFs.",
+    "Label Nova connects the whole shipping journey — order, rate, label, carrier, tracking and delivery — in one platform for shippers, dealers and resellers.",
   url: resolveSiteUrl(),
 } as const;
 
-export const mainNav = [
-  { label: "Platform", href: "/#platform" },
-  { label: "Features", href: "/#features" },
-  { label: "Templates", href: "/#templates" },
-  { label: "Pricing", href: "/#pricing" },
-  { label: "FAQ", href: "/#faq" },
-] as const;
+export interface NavItem {
+  label: string;
+  href: string;
+}
+
+/** Top navigation. Everything else is reachable from the footer. */
+export const mainNav: NavItem[] = [
+  { label: "Platform", href: "/platform" },
+  { label: "Solutions", href: "/solutions" },
+  { label: "How it works", href: "/how-it-works" },
+  { label: "Carriers", href: "/carriers" },
+  { label: "Bulk shipping", href: "/bulk-shipping" },
+  { label: "Tracking", href: "/tracking" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "API", href: "/developers" },
+  { label: "Resources", href: "/resources" },
+];
+
+export const footerNav: { title: string; links: NavItem[] }[] = [
+  {
+    title: "Product",
+    links: [
+      { label: "Platform", href: "/platform" },
+      { label: "How it works", href: "/how-it-works" },
+      { label: "Bulk shipping", href: "/bulk-shipping" },
+      { label: "Tracking", href: "/tracking" },
+      { label: "Pricing", href: "/pricing" },
+    ],
+  },
+  {
+    title: "Shipping",
+    links: [
+      { label: "Solutions", href: "/solutions" },
+      { label: "Carriers", href: "/carriers" },
+      { label: "API", href: "/developers" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Resources and FAQ", href: "/resources" },
+      { label: "Contact", href: "/contact" },
+      { label: "Request access", href: "/request-access" },
+    ],
+  },
+];
