@@ -8,6 +8,13 @@
       "when": 1790522748173,
       "tag": "0000_auth_and_access",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790577002749,
+      "tag": "0001_shipments_and_wallet_ledger",
+      "breakpoints": true
     }
   ]
 }

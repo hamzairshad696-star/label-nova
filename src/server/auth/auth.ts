@@ -1,7 +1,7 @@
 import "server-only";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { APIError } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { eq } from "drizzle-orm";
 import { AUTH_COOKIE_PREFIX, PASSWORD_MAX, PASSWORD_MIN } from "@/lib/auth-constants";
@@ -163,6 +163,27 @@ export const auth = betterAuth({
         },
       },
     },
+  },
+
+  // Audit self-service account changes. Runs after the endpoint succeeded.
+  hooks: {
+    after: createAuthMiddleware(async (ctx) => {
+      // After-hooks also run when the endpoint failed (e.g. wrong current password). Only log successes.
+      if (ctx.context.returned instanceof APIError) return;
+      const session = ctx.context.session ?? ctx.context.newSession;
+      const userId = session?.user?.id;
+      if (!userId) return;
+      const meta = requestMeta(ctx.request?.headers ?? ctx.headers);
+      if (ctx.path === "/change-password") {
+        await recordAudit({ actorUserId: userId, action: "user.password_changed", targetType: "user", targetId: userId, ...meta });
+      } else if (ctx.path === "/update-user") {
+        const body = (ctx.body ?? {}) as Record<string, unknown>;
+        await recordAudit({
+          actorUserId: userId, action: "user.profile_updated", targetType: "user", targetId: userId,
+          metadata: { fields: Object.keys(body).filter((k) => k === "name" || k === "company") }, ...meta,
+        });
+      }
+    }),
   },
 
   // Must be last: lets server actions set auth cookies.

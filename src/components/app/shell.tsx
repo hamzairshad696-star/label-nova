@@ -5,15 +5,23 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { LogoMark, Wordmark } from "@/components/brand/logo";
 import { cn } from "@/lib/cn";
-import type { ShellNavItem } from "./nav";
+import type { NavIcon, ShellNavItem } from "./nav";
 import { SignOutButton } from "./sign-out-button";
 import { WhatsAppButton } from "@/components/support/whatsapp-button";
 
-const icons: Record<ShellNavItem["icon"], ReactNode> = {
+const icons: Record<NavIcon, ReactNode> = {
   grid: <path d="M3.5 3.5h5v5h-5zM11.5 3.5h5v5h-5zM3.5 11.5h5v5h-5zM11.5 11.5h5v5h-5z" />,
   users: <path d="M7.5 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2.5 16.5c.6-2.7 2.6-4.2 5-4.2s4.4 1.5 5 4.2M13 3.3a3 3 0 0 1 0 5.4M14.6 12.6c1.4.6 2.4 1.9 2.9 3.9" />,
-  shield: <path d="M10 2.5 16 5v4.5c0 3.8-2.5 6.6-6 8-3.5-1.4-6-4.2-6-8V5z" />,
+  file: <path d="M5 2.5h6.5L15 6v11.5H5zM11.5 2.5V6H15M10 9v5M7.5 11.5h5" />,
+  stack: <path d="M3 5.5h14v3H3zM3 11.5h14v3H3z" />,
   box: <path d="M3 6.5 10 3l7 3.5v7L10 17l-7-3.5zM3 6.5 10 10l7-3.5M10 10v7" />,
+  route: <path d="M4.5 15.5a2 2 0 1 0 0-.01M15.5 4.5a2 2 0 1 0 0-.01M6.5 15.5h5a3 3 0 0 0 0-6h-3a3 3 0 0 1 0-6h5" />,
+  layers: <path d="M10 3l7 4-7 4-7-4zM3 11l7 4 7-4" />,
+  wallet: <path d="M3 6.5h13.5v10H3zM3 6.5 13 3.5v3M13 11.5h1.5" />,
+  list: <path d="M7 5.5h10M7 10h10M7 14.5h10M3.5 5.5h.01M3.5 10h.01M3.5 14.5h.01" />,
+  code: <path d="M7 6 3 10l4 4M13 6l4 4-4 4" />,
+  cog: <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4" />,
+  help: <path d="M10 17.5a7.5 7.5 0 1 0 0-15 7.5 7.5 0 0 0 0 15ZM7.8 7.8a2.3 2.3 0 1 1 3 2.2c-.5.2-.8.6-.8 1.1v.4M10 14h.01" />,
 };
 
 export interface ShellUser {
@@ -69,7 +77,23 @@ export function Shell({
       <p className="px-5 pt-2 pb-3 text-[0.75rem] font-medium text-midnight-muted">{area === "admin" ? "Control center" : "Workspace"}</p>
       <nav aria-label={area === "admin" ? "Admin" : "Workspace"} className="px-3">
         <ul className="grid gap-0.5">
-          {nav.map((i) => (
+          {nav.map((i) =>
+            i.soon ? (
+              <li key={i.href}>
+                <span
+                  aria-disabled="true"
+                  className="flex h-10 cursor-default items-center gap-3 rounded-control px-3 text-[0.9375rem] text-midnight-muted/60"
+                >
+                  <svg viewBox="0 0 20 20" className="size-[18px] shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" aria-hidden="true">
+                    {icons[i.icon]}
+                  </svg>
+                  {i.label}
+                  <span className="ml-auto rounded-full bg-white/[0.06] px-2 py-0.5 text-[0.6875rem] text-midnight-muted">
+                    Soon<span className="sr-only"> — not available yet</span>
+                  </span>
+                </span>
+              </li>
+            ) : (
             <li key={i.href}>
               <Link
                 href={i.href}
@@ -85,7 +109,8 @@ export function Shell({
                 {i.label}
               </Link>
             </li>
-          ))}
+            ),
+          )}
         </ul>
       </nav>
       <div className="mt-auto border-t border-midnight-line p-4">

@@ -30,5 +30,5 @@ async function as(email, pwd, paths, who) {
 await as(null, null, ["/login", "/request-access", "/forgot-password", "/reset-password?token=x"], "public");
 await as("hm621496@gmail.com", "LocalOnlyTestPw-123", ["/welcome", "/admin", "/admin/users", "/admin/users/new", `/admin/users/${custId}`, "/app"], "admin");
 await as("dana@dealer.test", "DealerPass-2026", ["/app", "/admin"], "dealer");
-await as("amara@customer.test", "BrandNewPass-2026", ["/app"], "customer");
+await as("amara@customer.test", "BrandNewPass-2026", ["/app", "/app/shipments", "/app/wallet", "/app/transactions", "/app/settings", "/app/support"], "customer");
 console.table(rows); if (detail.length) console.log(detail.join("\n"));
