@@ -13,11 +13,23 @@ export const ROLES: Record<RoleKey, { name: string; rank: number }> = {
   ADMIN: { name: "Admin", rank: 100 },
   DEALER: { name: "Dealer", rank: 70 },
   RESELLER: { name: "Reseller", rank: 40 },
-  CLIENT: { name: "Client", rank: 10 },
+  CLIENT: { name: "Customer", rank: 10 },
 };
 
-/** New self-service sign-ups get this role. */
+/** Safety net for any account created through Better Auth directly. Public sign-up is disabled. */
 export const DEFAULT_ROLE: RoleKey = "CLIENT";
+
+/** Roles an admin can create from the console. ADMIN is deliberately not creatable from the UI. */
+export const CREATABLE_ROLES = ["DEALER", "RESELLER", "CLIENT"] as const satisfies readonly RoleKey[];
+export type CreatableRole = (typeof CREATABLE_ROLES)[number];
+
+/** How each role is named in the interface. The database key CLIENT is shown as "Customer". */
+export const ROLE_LABEL: Record<RoleKey, string> = { ADMIN: "Admin", DEALER: "Dealer", RESELLER: "Reseller", CLIENT: "Customer" };
+
+/** Where each role lands after signing in. */
+export function dashboardFor(role: RoleKey): string {
+  return role === "ADMIN" ? "/admin" : "/app";
+}
 
 export const PERMISSIONS = {
   "labels.create": "Create labels",
@@ -38,6 +50,7 @@ export const PERMISSIONS = {
   "users.create": "Create user accounts",
   "users.disable": "Disable user accounts",
   "users.assign_role": "Change a user's role",
+  "users.reset_password": "Set a new password for another user",
   "api_keys.manage": "Manage API keys",
   "analytics.read": "View analytics",
   "audit.read": "View the audit log",

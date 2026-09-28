@@ -1,5 +1,5 @@
 import "server-only";
-import { desc, eq, inArray, sql, type SQL } from "drizzle-orm";
+import { and, desc, eq, inArray, sql, type SQL } from "drizzle-orm";
 import { assertPermission, type Actor } from "@/server/auth/permissions";
 import { db } from "@/server/db/client";
 import { users } from "@/server/db/schema";
@@ -10,6 +10,7 @@ export interface UserSummary {
   email: string;
   company: string | null;
   role: string;
+  parentName: string | null;
   status: "active" | "disabled" | "pending";
   createdAt: Date;
   lastLoginAt: Date | null;
@@ -31,10 +32,17 @@ function descendantIds(userId: string): SQL {
  * Lists users the actor may see. Scope comes from the actor's `users.read` grant:
  * `all` = everyone, `network` = everyone below them in the tree, `own` = only themselves.
  */
-export async function listUsers(actor: Actor, { limit = 50 }: { limit?: number } = {}): Promise<UserSummary[]> {
+export async function listUsers(
+  actor: Actor,
+  { limit = 50, role }: { limit?: number; role?: string } = {},
+): Promise<UserSummary[]> {
   const scope = assertPermission(actor, "users.read");
-  const where =
+  const scoped =
     scope === "all" ? undefined : scope === "network" ? inArray(users.id, descendantIds(actor.id)) : eq(users.id, actor.id);
+  const byRole = role
+    ? sql`exists (select 1 from user_roles ur inner join roles r on r.id = ur.role_id where ur.user_id = "users"."id" and r.key = ${role})`
+    : undefined;
+  const where = scoped && byRole ? and(scoped, byRole) : (scoped ?? byRole);
 
   // Highest-ranked role per user. Written as plain SQL so the outer "users" reference stays qualified.
   const roleKey = sql<string | null>`(
@@ -52,6 +60,7 @@ export async function listUsers(actor: Actor, { limit = 50 }: { limit?: number }
       email: users.email,
       company: users.company,
       role: roleKey,
+      parentName: sql<string | null>`(select p.name from users p where p.id = "users"."parent_user_id")`,
       status: users.status,
       createdAt: users.createdAt,
       lastLoginAt: users.lastLoginAt,

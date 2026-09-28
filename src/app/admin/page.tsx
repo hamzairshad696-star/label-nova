@@ -1,83 +1,81 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Forbidden } from "@/components/app/forbidden";
-import { Badge, type BadgeTone } from "@/components/ui/badge";
+import { PageHeader } from "@/components/app/shell";
+import { ButtonLink } from "@/components/ui/button";
 import { requireActor } from "@/server/auth/session";
+import { accountCounts } from "@/server/services/accounts";
 import { listRecentAudit } from "@/server/services/audit";
-import { listUsers } from "@/server/services/users";
 
-export const metadata: Metadata = { title: "Admin console", robots: { index: false } };
+export const metadata: Metadata = { title: "Control center", robots: { index: false } };
 
-const roleTone: Record<string, BadgeTone> = { ADMIN: "accent", DEALER: "info", RESELLER: "warning", CLIENT: "neutral" };
 const date = new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeStyle: "short" });
 
-export default async function AdminPage() {
+const actionLabel: Record<string, string> = {
+  "user.signed_in": "Signed in",
+  "user.created": "Account created",
+  "user.disabled": "Account disabled",
+  "user.enabled": "Account enabled",
+  "user.role_changed": "Role changed",
+  "user.password_reset": "Password reset",
+  "user.password_set_by_admin": "Password set by admin",
+  "user.registered": "Registered",
+};
+
+export default async function AdminOverviewPage() {
   const actor = await requireActor("/admin");
-  // Enforced again here and inside each service — the layout check is not relied on.
   if (actor.role.key !== "ADMIN") return <Forbidden />;
-  const [people, audit] = await Promise.all([listUsers(actor, { limit: 100 }), listRecentAudit(actor, 12)]);
+  const [counts, audit] = await Promise.all([accountCounts(actor), listRecentAudit(actor, 10)]);
+
+  const tiles = [
+    { label: "Dealers", value: counts.DEALER, href: "/admin/users?role=DEALER" },
+    { label: "Resellers", value: counts.RESELLER, href: "/admin/users?role=RESELLER" },
+    { label: "Customers", value: counts.CLIENT, href: "/admin/users?role=CLIENT" },
+    { label: "Disabled accounts", value: counts.disabled, href: "/admin/users" },
+  ];
 
   return (
-    <main id="main" className="mx-auto max-w-[1200px] px-5 py-10 sm:px-8 lg:py-14">
-      <h1 className="text-h2 font-semibold">Admin console</h1>
-      <p className="mt-2 text-lead text-ink-muted">Every account on the platform and recent security events.</p>
+    <>
+      <PageHeader
+        title="Control center"
+        description="Accounts across the platform and what's happened recently."
+        actions={<ButtonLink href="/admin/users/new" variant="accent">Create account</ButtonLink>}
+      />
+      <div className="grid gap-6 px-5 py-8 sm:px-8 lg:px-10">
+        <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-panel border border-line bg-line lg:grid-cols-4">
+          {tiles.map((t) => (
+            <li key={t.label}>
+              <Link href={t.href} className="block h-full bg-surface p-5 transition-colors hover:bg-paper">
+                <p className="text-[0.875rem] text-ink-muted">{t.label}</p>
+                <p className="mt-1 text-[2rem] leading-none font-semibold tabular-nums">{t.value}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
 
-      <section aria-labelledby="users-title" className="mt-10 overflow-hidden rounded-panel border border-line bg-surface">
-        <div className="flex items-center justify-between border-b border-line px-6 py-5">
-          <h2 id="users-title" className="text-[1rem] font-semibold">Users</h2>
-          <span className="text-[0.875rem] text-ink-muted">{people.length} total</span>
-        </div>
-        {people.length === 0 ? (
-          <p className="px-6 py-10 text-center text-ink-muted">No users yet. New sign-ups appear here.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] text-left text-[0.875rem]">
-              <thead className="bg-paper text-ink-muted">
-                <tr>
-                  {["Name", "Email", "Role", "Status", "Joined", "Last login"].map((h) => (
-                    <th key={h} scope="col" className="px-6 py-3 font-medium">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                {people.map((u) => (
-                  <tr key={u.id}>
-                    <td className="px-6 py-3.5">
-                      <p className="font-medium">{u.name}</p>
-                      {u.company ? <p className="text-[0.8125rem] text-ink-muted">{u.company}</p> : null}
-                    </td>
-                    <td className="px-6 py-3.5 text-ink-muted">{u.email}</td>
-                    <td className="px-6 py-3.5"><Badge tone={roleTone[u.role] ?? "neutral"}>{u.role}</Badge></td>
-                    <td className="px-6 py-3.5">
-                      <Badge tone={u.status === "active" ? "success" : u.status === "disabled" ? "danger" : "warning"}>{u.status}</Badge>
-                    </td>
-                    <td className="px-6 py-3.5 text-ink-muted">{date.format(u.createdAt)}</td>
-                    <td className="px-6 py-3.5 text-ink-muted">{u.lastLoginAt ? date.format(u.lastLoginAt) : "Never"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      <section aria-labelledby="audit-title" className="mt-4 rounded-panel border border-line bg-surface">
-        <h2 id="audit-title" className="border-b border-line px-6 py-5 text-[1rem] font-semibold">Recent activity</h2>
-        {audit.length === 0 ? (
-          <p className="px-6 py-10 text-center text-ink-muted">No events recorded yet.</p>
-        ) : (
-          <ul className="divide-y divide-line">
-            {audit.map((a) => (
-              <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 px-6 py-3 text-[0.875rem]">
-                <span>
-                  <span className="font-mono text-[0.8125rem]">{a.action}</span>
-                  <span className="text-ink-muted"> by {a.actorName ?? "system"}</span>
-                </span>
-                <time className="text-ink-muted" dateTime={a.createdAt.toISOString()}>{date.format(a.createdAt)}</time>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </main>
+        <section aria-labelledby="activity-title" className="rounded-panel border border-line bg-surface">
+          <h2 id="activity-title" className="border-b border-line px-6 py-4 font-semibold">
+            Recent activity
+          </h2>
+          {audit.length === 0 ? (
+            <p className="px-6 py-10 text-center text-ink-muted">Nothing has happened yet.</p>
+          ) : (
+            <ul className="divide-y divide-line">
+              {audit.map((a) => (
+                <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 px-6 py-3 text-[0.9375rem]">
+                  <span>
+                    {actionLabel[a.action] ?? a.action}
+                    <span className="text-ink-muted"> · {a.actorName ?? "System"}</span>
+                  </span>
+                  <time className="text-[0.875rem] text-ink-muted" dateTime={a.createdAt.toISOString()}>
+                    {date.format(a.createdAt)}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </>
   );
 }

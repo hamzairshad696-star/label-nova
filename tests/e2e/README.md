@@ -1,16 +1,16 @@
-# Auth end-to-end suite
+# End-to-end suites
 
-29 checks covering registration, login, logout, password reset, open-redirect
-protection, role and network scoping, disabled accounts and rate limiting.
-It runs against a real server and a local Postgres whose demo data it resets.
-Never point it at production.
+**Local only.** These suites create, disable and delete accounts, clear the sign-in rate limiter
+and edit roles directly in the database. Never point them at production or a shared database.
+They expect `postgres://ln:ln@localhost:5432/labelnova` and a server on `http://localhost:3000`.
 
-```bash
-pip install playwright && playwright install chromium
-# .env.local must contain EMAIL_TRANSPORT=console so reset links reach the log
-npm run build && node --env-file=.env.local node_modules/next/dist/bin/next start > /tmp/app.log 2>&1 &
-BASE_URL=http://localhost:3000 SERVER_LOG=/tmp/app.log python3 tests/e2e/auth_flow.py
-```
+| Suite | What it proves |
+|---|---|
+| `security.sh` | Public sign-up blocked, `/register` redirect, wrong password rejected, admin access, signed-out API 401, open-redirect blocked |
+| `accounts-and-welcome.mjs` | Admin creates each role through the UI; validation; each role's welcome screen, timing and landing page; network isolation; disable/enable, password reset, role change; admin self-protection |
+| `authz-attack.py` | Replays genuine server-action requests (captured by `capture-action.mjs`) as signed-out, forged-cookie, customer, dealer and reseller callers. Includes a positive control proving replays execute |
+| `a11y-public.mjs`, `a11y-signed-in.mjs` | axe-core WCAG 2 A/AA + best practice on every public, auth and signed-in page, per role |
+| `mobile-keyboard.mjs` | 390px layouts without sideways scroll, keyboard-only sign-in order, drawer open/Escape/focus return |
 
-The script uses `su postgres -c psql` for its setup steps; adjust those lines if
-your local Postgres runs differently.
+Browser suites use a separate browser instance per person: the headless Chromium used here runs
+`--single-process`, which does not isolate cookies between contexts.

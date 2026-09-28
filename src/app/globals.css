@@ -245,3 +245,88 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- Welcome after sign-in ---------- */
+.ln-welcome {
+  animation: ln-fade-out 250ms ease-in var(--ln-out, 2350ms) forwards;
+}
+.ln-welcome [data-step] {
+  opacity: 0;
+  animation: ln-rise 520ms var(--ease-out) forwards;
+}
+.ln-welcome [data-step="mark"] {
+  animation: ln-mark-in 650ms var(--ease-out) forwards;
+}
+.ln-welcome [data-step="word"] {
+  opacity: 1;
+  clip-path: inset(0 100% 0 0);
+  animation:
+    ln-reveal 600ms var(--ease-out) 300ms forwards,
+    ln-sweep 900ms ease-in-out 650ms forwards;
+}
+.ln-welcome [data-step="title"] {
+  animation-delay: 850ms;
+}
+.ln-welcome [data-step="line"] {
+  animation-delay: 1250ms;
+}
+.ln-welcome [data-step="route"] {
+  animation-delay: 1150ms;
+}
+.ln-welcome__trail {
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: ln-trail 1100ms var(--ease-out) 1250ms forwards;
+}
+.ln-welcome__parcel {
+  offset-path: path("M0 1 H320");
+  offset-distance: 0%;
+  animation: ln-travel 1100ms var(--ease-out) 1250ms forwards;
+}
+/* Returning visitors: everything at once, quickly. */
+.ln-welcome[data-mode="quick"] [data-step] {
+  animation-duration: 380ms;
+  animation-delay: 0ms;
+}
+.ln-welcome[data-mode="quick"] [data-step="word"] {
+  animation:
+    ln-reveal 380ms var(--ease-out) 60ms forwards,
+    ln-sweep 500ms ease-in-out 150ms forwards;
+}
+@keyframes ln-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ln-fade-out {
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+@keyframes ln-trail {
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes ln-travel {
+  to {
+    offset-distance: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ln-welcome [data-step] {
+    opacity: 1;
+    clip-path: none;
+    animation: none;
+  }
+  .ln-welcome__trail {
+    transform: none;
+    animation: none;
+  }
+}

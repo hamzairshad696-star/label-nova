@@ -1,6 +1,7 @@
 import "server-only";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
+import { resolveDatabaseUrl } from "./database-url";
 import * as schema from "./schema";
 
 /**
@@ -9,14 +10,19 @@ import * as schema from "./schema";
  */
 const globalForDb = globalThis as unknown as { labelNovaPool?: Pool };
 
-if (!process.env.DATABASE_URL && process.env.NEXT_PHASE !== "phase-production-build") {
-  console.error("[label-nova] DATABASE_URL is not set. Sign-in and all signed-in pages will fail until it is added.");
+const target = resolveDatabaseUrl("pooled");
+if (!target.url && process.env.NEXT_PHASE !== "phase-production-build") {
+  console.error(`[label-nova] Database: ${target.label}. Sign-in and signed-in pages are unavailable.`);
 }
+
+// With no permitted database, point at an address that can never resolve, so no query can reach any real server.
+const DISABLED = "postgresql://database-disabled.invalid:5432/none";
 
 const pool =
   globalForDb.labelNovaPool ??
-  new Pool({ connectionString: process.env.DATABASE_URL, max: 5, idleTimeoutMillis: 10_000 });
+  new Pool({ connectionString: target.url ?? DISABLED, max: 5, idleTimeoutMillis: 10_000, connectionTimeoutMillis: 5_000 });
 if (process.env.NODE_ENV !== "production") globalForDb.labelNovaPool = pool;
 
 export const db = drizzle(pool, { schema, casing: "snake_case" });
 export type Db = typeof db;
+export const databaseAvailable = target.url !== null;

@@ -1,29 +1,26 @@
 import Link from "next/link";
+import { AuthBackdrop } from "@/components/auth/auth-backdrop";
 import { Logo } from "@/components/brand/logo";
-import { ShippingLabel } from "@/components/label/shipping-label";
-import { sampleLabel } from "@/components/label/sample-data";
+import { whatsappLink } from "@/config/support";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid min-h-dvh lg:grid-cols-[1fr_minmax(0,560px)]">
-      <div className="flex flex-col px-5 py-6 sm:px-10">
-        <Link href="/" aria-label="Label Nova home" className="self-start rounded-control">
-          <Logo />
+    <div className="relative flex min-h-dvh flex-col overflow-hidden bg-midnight">
+      <AuthBackdrop />
+      <header className="relative flex justify-center px-5 pt-10 sm:pt-14">
+        <Link href="/" aria-label="Label Nova home" className="rounded-control">
+          <Logo tone="dark" />
         </Link>
-        <main id="main" className="flex flex-1 items-center justify-center py-12">
-          <div className="w-full max-w-[400px]">{children}</div>
-        </main>
-        <p className="text-[0.8125rem] text-ink-faint">© {new Date().getFullYear()} Label Nova</p>
-      </div>
-
-      <aside aria-hidden="true" className="relative hidden overflow-hidden bg-ink lg:flex lg:flex-col lg:justify-center lg:px-14">
-        <div className="mx-auto w-full max-w-[300px] rotate-[-3deg]">
-          <ShippingLabel data={sampleLabel} showBindings={false} />
-        </div>
-        <p className="mx-auto mt-14 max-w-[22rem] text-center text-lead text-white/70">
-          One label or ten thousand. Checked, priced and print-ready before you commit.
-        </p>
-      </aside>
+      </header>
+      <main id="main" className="relative flex flex-1 items-center justify-center px-5 py-10">
+        <div className="w-full max-w-[420px] rounded-panel bg-surface p-7 shadow-[0_24px_64px_-24px_rgb(0_0_0/0.6)] sm:p-9">{children}</div>
+      </main>
+      <footer className="relative flex flex-wrap justify-center gap-x-5 gap-y-1 px-5 pb-8 text-[0.8125rem] text-midnight-muted">
+        <span>© {new Date().getFullYear()} Label Nova</span>
+        <a href={whatsappLink("technical")} target="_blank" rel="noopener noreferrer" className="hover:text-white">
+          Trouble signing in? WhatsApp support
+        </a>
+      </footer>
     </div>
   );
 }

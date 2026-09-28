@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
 /**
@@ -31,8 +32,12 @@ export function LogoMark({ className, orbitClassName }: { className?: string; or
   );
 }
 
-export function Wordmark({ className }: { className?: string }) {
-  return <span className={cn("font-semibold tracking-[0.16em] uppercase", className)}>Label Nova</span>;
+export function Wordmark({ className, ...rest }: ComponentProps<"span">) {
+  return (
+    <span className={cn("font-semibold tracking-[0.16em] uppercase", className)} {...rest}>
+      Label Nova
+    </span>
+  );
 }
 
 /** Full lockup. `tone="dark"` is for midnight backgrounds. */

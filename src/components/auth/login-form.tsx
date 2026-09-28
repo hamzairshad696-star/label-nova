@@ -28,8 +28,8 @@ export function LoginForm({ next, notice }: { next: string; notice?: string | nu
       setPending(false);
       return setError(authErrorMessage(error));
     }
-    router.replace(next);
-    router.refresh();
+    // The welcome screen decides the destination from the person's role.
+    router.replace(next ? `/welcome?next=${encodeURIComponent(next)}` : "/welcome");
   }
 
   return (
@@ -43,15 +43,14 @@ export function LoginForm({ next, notice }: { next: string; notice?: string | nu
         autoComplete="current-password"
         required
         error={errors.password}
-        labelAside={
-          <Link href="/forgot-password" className="text-[0.8125rem] font-medium text-nova hover:text-nova-strong">
-            Forgot password?
-          </Link>
-        }
       />
-      <SubmitButton pending={pending} pendingLabel="Logging in…">
-        Log in
+      <SubmitButton pending={pending} pendingLabel="Signing in…">
+        Sign in
       </SubmitButton>
+      {/* After the button, so Tab goes Email → Password → Sign in. */}
+      <Link href="/forgot-password" className="justify-self-center text-[0.875rem] font-medium text-nova hover:text-nova-strong">
+        Forgot password?
+      </Link>
     </form>
   );
 }
