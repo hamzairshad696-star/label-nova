@@ -16,9 +16,9 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   return (
     <>
       <AuthHeading title="Welcome back">
-        New to Label Nova?{" "}
-        <Link href="/register" className="font-medium text-nova hover:text-nova-strong">
-          Create an account
+        Need access?{" "}
+        <Link href="/request-access" className="font-medium text-nova hover:text-nova-strong">
+          Request an account
         </Link>
       </AuthHeading>
       <LoginForm next={next} notice={params.reset ? "Password updated. Log in with your new password." : null} />

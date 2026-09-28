@@ -19,7 +19,7 @@ export const plans: Plan[] = [
     perLabelCents: 12,
     monthlyCents: 0,
     includes: ["All standard templates", "Single-label creator", "CSV bulk up to 500 rows", "Label history for 90 days"],
-    cta: { label: "Start free", href: "/register" },
+    cta: { label: "Request access", href: "/request-access" },
   },
   {
     id: "growth",
@@ -34,7 +34,7 @@ export const plans: Plan[] = [
       "REST API and webhooks",
       "Unlimited label history",
     ],
-    cta: { label: "Get started", href: "/register" },
+    cta: { label: "Request access", href: "/request-access" },
     recommended: true,
   },
   {

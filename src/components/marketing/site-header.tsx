@@ -61,8 +61,8 @@ export function SiteHeader() {
           <ButtonLink href="/login" variant="ghost" size="sm">
             Log in
           </ButtonLink>
-          <ButtonLink href="/register" size="sm">
-            Get started
+          <ButtonLink href="/request-access" size="sm">
+            Request access
           </ButtonLink>
         </div>
 
@@ -103,8 +103,8 @@ export function SiteHeader() {
               </ul>
             </nav>
             <div className="mt-auto grid gap-3 pt-8">
-              <ButtonLink href="/register" size="lg" onClick={() => setOpen(false)}>
-                Get started
+              <ButtonLink href="/request-access" size="lg" onClick={() => setOpen(false)}>
+                Request access
               </ButtonLink>
               <ButtonLink href="/login" variant="secondary" size="lg" onClick={() => setOpen(false)}>
                 Log in

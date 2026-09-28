@@ -22,8 +22,8 @@ export function Hero() {
             or ten thousand, ready to print in seconds.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <ButtonLink href="/register" size="lg">
-              Get started
+            <ButtonLink href="/request-access" size="lg">
+              Request access
             </ButtonLink>
             <ButtonLink href="#platform" size="lg" variant="secondary">
               Explore platform

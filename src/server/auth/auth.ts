@@ -68,6 +68,9 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    // Accounts are created by an admin only. This blocks /api/auth/sign-up/email at the server,
+    // not just in the UI, so nobody can self-register or choose a role.
+    disableSignUp: true,
     minPasswordLength: PASSWORD_MIN,
     maxPasswordLength: PASSWORD_MAX,
     autoSignIn: true,
@@ -118,7 +121,7 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user, ctx) => {
-          // Every self-service sign-up starts as a CLIENT with no parent.
+          // Safety net: any account created through Better Auth gets the lowest role. Public sign-up is disabled.
           const role = await db.query.roles.findFirst({ where: eq(roles.key, DEFAULT_ROLE) });
           if (!role) {
             console.error(`[auth] Role ${DEFAULT_ROLE} is missing. Run "npm run db:bootstrap" against this database.`);

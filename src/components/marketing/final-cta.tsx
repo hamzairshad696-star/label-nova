@@ -9,11 +9,11 @@ export function FinalCta() {
           Your next label is thirty seconds away.
         </h2>
         <p className="mx-auto mt-4 max-w-[34rem] text-lead text-ink-muted">
-          Create a free account, pick a template and print. No card needed to try it.
+          Accounts are set up by our team so your pricing and access are right from day one.
         </p>
         <div className="mt-9 flex flex-wrap justify-center gap-3">
-          <ButtonLink href="/register" size="lg">
-            Get started
+          <ButtonLink href="/request-access" size="lg">
+            Request access
           </ButtonLink>
           <ButtonLink href="mailto:sales@labelnova.com" size="lg" variant="secondary">
             Talk to sales
