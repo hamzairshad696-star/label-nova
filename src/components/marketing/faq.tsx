@@ -5,11 +5,11 @@ export const faqs = [
   },
   {
     q: "Are Label Nova labels valid carrier postage?",
-    a: "Carrier postage is only valid when it is bought from the carrier or an authorised partner. Label Nova will buy USPS, UPS and FedEx labels through such a partner, so tracking numbers and barcodes come from the carrier. Until that connection is live, carrier postage is not offered.",
+    a: "Carrier postage is only valid when it is bought from the carrier or an authorised partner. Label Nova will buy USPS, UPS and FedEx labels through such a partner, so tracking numbers and barcodes come from the carrier. Until that connection is live, carrier postage is not offered. Label Nova labels available today are label-only: they carry a Label Nova number and barcode, but no carrier postage.",
   },
   {
     q: "Can I run my own customers as a dealer or reseller?",
-    a: "Yes. Dealer and reseller accounts exist today and are scoped so each partner sees only their own customers. Per-customer pricing and wallet transfers arrive with the pricing engine and wallet.",
+    a: "Yes. Dealer and reseller accounts exist today and are scoped so each partner sees only their own customers. Dealers and resellers already buy at their own price tier; setting prices for their own customers and transferring funds to them are coming next.",
   },
   {
     q: "How is pricing set?",

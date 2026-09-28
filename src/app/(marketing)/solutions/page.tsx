@@ -47,7 +47,7 @@ export default function SolutionsPage() {
         </div>
         <p className="mt-8 flex flex-wrap items-center gap-3 text-[0.9375rem] text-ink-muted">
           <StatusTag status="available" /> Dealer, reseller and customer accounts with network scoping are live.
-          <StatusTag status="building" /> Partner pricing and wallet transfers arrive with the pricing engine.
+          <StatusTag status="available" /> Dealer and reseller price tiers are live. <StatusTag status="building" /> Setting your own customers&rsquo; prices and moving funds to them come next.
         </p>
       </Section>
       <CtaBand title="Talk to us about a partner account." topic="partner" />

@@ -22,6 +22,13 @@
       "when": 1790577827513,
       "tag": "0002_pricing",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790592715776,
+      "tag": "0003_label_purchase",
+      "breakpoints": true
     }
   ]
 }

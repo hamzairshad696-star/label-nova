@@ -31,7 +31,7 @@ export const capabilities = {
   orders: {
     title: "Orders and shipments",
     summary: "Every shipment keeps its order, label, cost and status together in one record.",
-    status: "building",
+    status: "available",
   },
   rates: {
     title: "Rate comparison",
@@ -40,8 +40,8 @@ export const capabilities = {
   },
   labels: {
     title: "Print-ready labels",
-    summary: "Vector PDF labels with Code 128 barcodes in 4×6, 4×4, 2×1, A4, Letter or custom sizes.",
-    status: "building",
+    summary: "Vector PDF Label Nova labels with scannable Code 128 barcodes in 4×6, 4×4, 2×1, A4 and Letter. Label-only: no carrier postage.",
+    status: "available",
   },
   carriers: {
     title: "Carrier postage",
@@ -60,13 +60,13 @@ export const capabilities = {
   },
   wallet: {
     title: "Wallet and ledger",
-    summary: "Prepaid balance where every charge, top-up, refund and adjustment is an auditable ledger entry.",
-    status: "building",
+    summary: "Prepaid balance where every charge, top-up, refund and adjustment is an auditable ledger entry. Top-ups are credited by the Label Nova team.",
+    status: "available",
   },
   pricing: {
     title: "Tiered pricing",
     summary: "Separate customer, dealer and reseller prices per carrier, service, weight and zone, set by the admin.",
-    status: "building",
+    status: "available",
   },
   api: {
     title: "Developer API",

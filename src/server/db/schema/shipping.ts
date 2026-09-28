@@ -1,5 +1,9 @@
-import { bigint, index, integer, jsonb, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { bigint, index, integer, jsonb, pgEnum, pgSequence, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { users } from "./auth";
+import { carrierServices, pricingRules } from "./pricing";
+
+/** Source of Label Nova label numbers (see src/server/labels/numbering.ts). */
+export const labelNumberSeq = pgSequence("label_number_seq", { startWith: 1, increment: 1 });
 
 export const shipmentStatus = pgEnum("shipment_status", [
   "draft", // being prepared, nothing bought
@@ -42,9 +46,18 @@ export const shipments = pgTable(
     lengthIn: integer(),
     widthIn: integer(),
     heightIn: integer(),
+    /** Carrier fields: only ever filled from a real carrier/partner response. Null for label-only labels. */
     carrier: text(),
     service: text(),
     trackingNumber: text(),
+    /** What was bought, and the exact rule and prices it was charged under (immune to later rule edits). */
+    serviceId: uuid().references(() => carrierServices.id, { onDelete: "restrict" }),
+    pricingRuleId: uuid().references(() => pricingRules.id, { onDelete: "restrict" }),
+    priceSnapshot: jsonb().$type<Record<string, unknown>>(),
+    /** Label Nova's own label number (not a carrier tracking number). */
+    labelNumber: text(),
+    /** Makes "create label" safe to retry: the same key returns the same shipment and charge. */
+    idempotencyKey: text(),
     priceCents: bigint({ mode: "number" }), // what the owner was charged
     currency: text().notNull().default("USD"),
     labelCreatedAt: timestamp({ withTimezone: true }),
@@ -59,6 +72,8 @@ export const shipments = pgTable(
     index("shipments_owner_created_idx").on(t.ownerUserId, t.createdAt.desc()),
     index("shipments_owner_status_idx").on(t.ownerUserId, t.status),
     index("shipments_tracking_idx").on(t.trackingNumber),
+    uniqueIndex("shipments_label_number_idx").on(t.labelNumber),
+    uniqueIndex("shipments_idempotency_idx").on(t.idempotencyKey),
   ],
 );
 

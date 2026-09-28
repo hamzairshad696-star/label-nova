@@ -2,7 +2,7 @@ import "server-only";
 import { and, desc, eq, inArray, sql, type SQL } from "drizzle-orm";
 import { assertPermission, type Actor } from "@/server/auth/permissions";
 import { db } from "@/server/db/client";
-import { shipments, shipmentStatus } from "@/server/db/schema";
+import { carrierServices, carriers, shipments, shipmentStatus } from "@/server/db/schema";
 
 export type ShipmentStatus = (typeof shipmentStatus.enumValues)[number];
 export const shipmentStatusValues = shipmentStatus.enumValues;
@@ -41,14 +41,17 @@ export async function listShipments(actor: Actor, { status, limit = 50 }: { stat
       status: shipments.status,
       toName: sql<string | null>`${shipments.toAddress}->>'name'`,
       toCity: sql<string | null>`${shipments.toAddress}->>'city'`,
-      carrier: shipments.carrier,
-      service: shipments.service,
+      carrier: sql<string | null>`coalesce(${shipments.carrier}, ${carriers.name})`,
+      service: sql<string | null>`coalesce(${shipments.service}, ${carrierServices.name})`,
       trackingNumber: shipments.trackingNumber,
+      labelNumber: shipments.labelNumber,
       priceCents: shipments.priceCents,
       currency: shipments.currency,
       createdAt: shipments.createdAt,
     })
     .from(shipments)
+    .leftJoin(carrierServices, eq(carrierServices.id, shipments.serviceId))
+    .leftJoin(carriers, eq(carriers.id, carrierServices.carrierId))
     .where(where)
     .orderBy(desc(shipments.createdAt))
     .limit(Math.min(Math.max(limit, 1), 200));

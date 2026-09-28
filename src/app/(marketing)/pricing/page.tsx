@@ -26,8 +26,7 @@ export default function PricingPage() {
           ))}
         </div>
         <p className="mt-10 flex flex-wrap items-center gap-3 text-[0.9375rem] text-ink-muted">
-          <StatusTag status={capabilities.pricing.status} /> The pricing engine and wallet are being built. No charges are
-          taken until they are live.
+          <StatusTag status={capabilities.pricing.status} /> Labels are charged from your wallet at your account&rsquo;s price. Top-ups are credited by our team; card payments will follow.
         </p>
       </Section>
       <CtaBand title="Ask for a quote on your volume." topic="pricing" />

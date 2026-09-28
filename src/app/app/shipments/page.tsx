@@ -39,7 +39,7 @@ export default async function ShipmentsPage({ searchParams }: { searchParams: Pr
             <div className="px-6 py-14 text-center">
               <p className="font-medium">{status ? `No shipments are ${statusLabel[status].toLowerCase()}.` : "No shipments yet."}</p>
               <p className="mx-auto mt-1 max-w-[28rem] text-[0.9375rem] text-ink-muted">
-                Shipments appear here once label creation is live. Each one keeps its recipient, service, tracking and cost together.
+                Each label you create appears here with its recipient, service, label number and cost.
               </p>
             </div>
           ) : (

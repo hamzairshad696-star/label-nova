@@ -28,7 +28,7 @@ export function navFor(area: "admin" | "app", role: RoleKey): ShellNavItem[] {
   if (role !== "CLIENT") return [{ label: "Dashboard", href: "/app", icon: "grid", exact: true }, ...account];
   return [
     { label: "Dashboard", href: "/app", icon: "grid", exact: true },
-    { label: "Create label", href: "/app/create-label", icon: "file", soon: true },
+    { label: "Create label", href: "/app/create-label", icon: "file" },
     { label: "Bulk shipping", href: "/app/bulk", icon: "stack", soon: true },
     { label: "Shipments", href: "/app/shipments", icon: "box" },
     { label: "Tracking", href: "/app/tracking", icon: "route", soon: true },

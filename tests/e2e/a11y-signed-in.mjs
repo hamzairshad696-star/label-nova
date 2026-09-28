@@ -27,9 +27,13 @@ async function as(email, pwd, paths, who) {
   for (const path of paths) await audit(p, path, who);
   await br.close();
 }
-await as(null, null, ["/login", "/request-access", "/forgot-password", "/reset-password?token=x"], "public");
+const PART = process.env.A11Y_PART ?? "all";
+if (PART === "all" || PART === "admin") await as(null, null, ["/login", "/request-access", "/forgot-password", "/reset-password?token=x"], "public");
 const ruleId = q("select id from pricing_rules order by created_at limit 1");
-await as("hm621496@gmail.com", "LocalOnlyTestPw-123", ["/welcome", "/admin", "/admin/users", "/admin/users/new", `/admin/users/${custId}`, "/admin/pricing", "/admin/pricing/history", `/admin/pricing/rules/${ruleId}`, "/app"], "admin");
-await as("dana@dealer.test", "DealerPass-2026", ["/app", "/admin"], "dealer");
-await as("amara@customer.test", "BrandNewPass-2026", ["/app", "/app/shipments", "/app/wallet", "/app/transactions", "/app/settings", "/app/support"], "customer");
+if (PART === "all" || PART === "admin") await as("hm621496@gmail.com", "LocalOnlyTestPw-123", ["/welcome", "/admin", "/admin/users", "/admin/users/new", `/admin/users/${custId}`, "/admin/pricing", "/admin/pricing/history", `/admin/pricing/rules/${ruleId}`, "/app"], "admin");
+if (PART === "all" || PART === "customers") await as("dana@dealer.test", "DealerPass-2026", ["/app", "/admin"], "dealer");
+if (PART === "all" || PART === "customers") await as("amara@customer.test", "BrandNewPass-2026", ["/app", "/app/shipments", "/app/wallet", "/app/transactions", "/app/settings", "/app/support"], "customer");
+const shipId = q("select s.id from shipments s join users u on u.id=s.owner_user_id where u.email='omar@p5.test' and s.label_number is not null limit 1");
+if (PART === "all" || PART === "labels") { if (!shipId) throw new Error("No labelled shipment to audit — run the Phase 5 suites first.");
+await as("omar@p5.test", "Phase5Pass-2026", ["/app/create-label", `/app/shipments/${shipId}`, "/app/shipments", "/app/transactions", "/app"], "customer+labels"); }
 console.table(rows); if (detail.length) console.log(detail.join("\n"));

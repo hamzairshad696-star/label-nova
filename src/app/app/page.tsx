@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/app/shell";
 import { StatusTag } from "@/components/marketing/status-tag";
 import Link from "next/link";
 import { ShipmentsList } from "@/components/app/shipments-table";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button";
 import { formatCents } from "@/lib/money";
 import type { Actor } from "@/server/auth/permissions";
 import { recentActivity } from "@/server/services/activity";
@@ -131,12 +131,7 @@ async function CustomerDashboard({ actor, firstName }: { actor: Actor; firstName
         title="Shipping command center"
         description={`Hello, ${firstName}.${actor.company ? ` ${actor.company}` : ""}`}
         actions={
-          <div className="flex flex-col items-end gap-1">
-            <Button variant="accent" disabled aria-describedby="create-soon">
-              Create label
-            </Button>
-            <span id="create-soon" className="text-[0.8125rem] text-ink-muted">Label creation arrives in the next release.</span>
-          </div>
+          <ButtonLink href="/app/create-label" variant="accent">Create label</ButtonLink>
         }
       />
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6 px-5 py-8 sm:px-8 lg:px-10">
@@ -161,7 +156,7 @@ async function CustomerDashboard({ actor, firstName }: { actor: Actor; firstName
               <div className="px-6 py-12 text-center">
                 <p className="font-medium">No shipments yet.</p>
                 <p className="mx-auto mt-1 max-w-[26rem] text-[0.9375rem] text-ink-muted">
-                  Your shipments will appear here with their status and cost as soon as label creation is live.
+                  Create your first label and it will appear here with its status and cost.
                 </p>
               </div>
             ) : (

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { formatCents } from "@/lib/money";
 import type { ShipmentStatus } from "@/server/services/shipments";
 import { ShipmentStatusBadge } from "./shipment-status";
@@ -13,6 +14,7 @@ export interface ShipmentRow {
   carrier: string | null;
   service: string | null;
   trackingNumber: string | null;
+  labelNumber: string | null;
   priceCents: number | null;
   currency: string;
   createdAt: Date;
@@ -24,7 +26,7 @@ export function ShipmentsTable({ rows }: { rows: ShipmentRow[] }) {
       <table className="w-full min-w-[720px] text-left text-[0.9375rem]">
         <thead className="bg-paper text-[0.8125rem] text-ink-muted">
           <tr>
-            {["Recipient", "Reference", "Service", "Tracking", "Status", "Cost", "Created"].map((h) => (
+            {["Recipient", "Reference", "Service", "Label / tracking", "Status", "Cost", "Created"].map((h) => (
               <th key={h} scope="col" className="px-5 py-3 font-medium">{h}</th>
             ))}
           </tr>
@@ -33,12 +35,12 @@ export function ShipmentsTable({ rows }: { rows: ShipmentRow[] }) {
           {rows.map((s) => (
             <tr key={s.id}>
               <td className="px-5 py-3.5">
-                <p className="font-medium">{s.toName ?? "—"}</p>
+                <Link href={`/app/shipments/${s.id}`} className="font-medium hover:text-nova">{s.toName ?? s.reference ?? "Shipment"}</Link>
                 {s.toCity ? <p className="text-[0.8125rem] text-ink-muted">{s.toCity}</p> : null}
               </td>
               <td className="px-5 py-3.5 text-ink-muted">{s.reference ?? "—"}</td>
               <td className="px-5 py-3.5 text-ink-muted">{s.carrier ? `${s.carrier} ${s.service ?? ""}` : "—"}</td>
-              <td className="px-5 py-3.5 font-mono text-[0.8125rem]">{s.trackingNumber ?? "—"}</td>
+              <td className="px-5 py-3.5 font-mono text-[0.8125rem]">{s.trackingNumber ?? s.labelNumber ?? "—"}</td>
               <td className="px-5 py-3.5"><ShipmentStatusBadge status={s.status} /></td>
               <td className="px-5 py-3.5 tabular-nums">{s.priceCents === null ? "—" : formatCents(s.priceCents, s.currency)}</td>
               <td className="px-5 py-3.5 text-ink-muted">{date.format(s.createdAt)}</td>
@@ -57,7 +59,7 @@ export function ShipmentsList({ rows }: { rows: ShipmentRow[] }) {
       {rows.map((s) => (
         <li key={s.id} className="flex items-center justify-between gap-4 px-6 py-3.5">
           <div className="min-w-0">
-            <p className="truncate font-medium">{s.toName ?? s.reference ?? "Untitled shipment"}</p>
+            <Link href={`/app/shipments/${s.id}`} className="block truncate font-medium hover:text-nova">{s.toName ?? s.reference ?? "Untitled shipment"}</Link>
             <p className="truncate text-[0.8125rem] text-ink-muted">
               {[s.toName ? s.reference : null, s.carrier ? `${s.carrier} ${s.service ?? ""}`.trim() : null, date.format(s.createdAt)].filter(Boolean).join(" · ")}
             </p>

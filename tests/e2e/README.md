@@ -13,6 +13,12 @@ They expect `postgres://ln:ln@localhost:5432/labelnova` and a server on `http://
 | `customer-dashboard.mjs` | Honest empty states; balance, month spend and counts computed from real ledger/shipment rows; per-customer isolation; profile and password change with audit (failed attempts not logged); other devices signed out; `/update-user` cannot touch status, parent, email, verification or role; 390px layouts |
 | `pricing-and-wallet.mjs` | Carriers/services (label-only vs carrier postage), rule validation, live margin hints, overlap rejection, edit history before→after, deactivate/reactivate, DB-level no-delete/append-only; admin top-up and adjustments, below-zero refusal, customer sees entries |
 | `pricing-wallet-attack.py` | Customers, dealers, signed-out and forged callers can't touch prices or wallets; tampering rejected; idempotent replays; 10 concurrent debits can't overspend; 5 concurrent overlapping rules → 1 |
+| `label-test-setup.py` + `p5lib.py` | Creates the Phase 5 test accounts, funds and price catalog through the real server actions |
+| `label-creation.mjs` | Wizard end to end: validation, tier price, postage refused, review maths, purchase checked in the DB (price, snapshot, one charge, empty carrier fields, valid label number), PDF decoded with zbar, all formats, isolation, price change mid-checkout, insufficient funds, phone layout |
+| `label-purchase-attack.py` | Postage purchase, tampered prices, fake service, unprintable text, admin/signed-out/forged buyers refused; dealer tier price; quotes leak no internals; idempotent and concurrent purchases never overspend or double-charge |
+| `a11y-create-label-wizard.mjs` | axe on every wizard step incl. error state; error linking, focus to step heading, arrow keys skip disabled postage, live-region success |
+| `rehearse-migrations-local.sh` | Rebuilds production's state (migration 0000 + production-shaped data, without later permissions), runs the real deploy step twice, proves every pre-existing row is byte-identical and lists exactly what was added |
+| `reset-local-domain.sh` | Removes LOCAL test accounts for one email domain (e.g. `p5.test`) |
 | `reset-local-pricing.sh` | Clears the LOCAL pricing catalog |
 | `run-all-local.sh` | Every suite, in order, from a clean local state |
 | `reset-local-test-users.sh` | Removes `*.test` accounts from the LOCAL database (bypasses the ledger's append-only trigger for that one transaction) |

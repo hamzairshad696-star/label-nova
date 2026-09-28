@@ -30,10 +30,10 @@ let body = await nia.locator("main").innerText();
 ok("fresh customer lands on command center", body.includes("Shipping command center"));
 ok("fresh balance is $0.00 (real, from empty ledger)", body.includes("Wallet balance") && body.includes("$0.00"));
 ok("empty shipments state shown", body.includes("No shipments yet."));
-ok("Create label is visibly unavailable (disabled)", await nia.getByRole("button", { name: "Create label" }).isDisabled());
+ok("Create label is a working link (Phase 5)", (await nia.getByRole("link", { name: "Create label" }).first().getAttribute("href")) === "/app/create-label");
 const soon = await nia.locator("aside nav [aria-disabled=true]").allInnerTexts();
-ok("unbuilt features shown as non-links marked Soon", soon.length === 5 && soon.every((t) => /Soon/.test(t)), soon.map((t) => t.split("\n")[0]).join(", "));
-ok("Soon items are not links", (await nia.locator("aside nav a", { hasText: "Create label" }).count()) === 0);
+ok("unbuilt features shown as non-links marked Soon", soon.length === 4 && soon.every((t) => /Soon/.test(t)), soon.map((t) => t.split("\n")[0]).join(", "));
+ok("Soon items are not links", (await nia.locator("aside nav a", { hasText: "Bulk shipping" }).count()) === 0);
 
 // ---- Real-shaped data inserted as later phases will write it (LOCAL test DB only)
 const niaId = q("select id from users where email='nia@p4.test'"), omarId = q("select id from users where email='omar@p4.test'");
