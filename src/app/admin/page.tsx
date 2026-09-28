@@ -41,7 +41,7 @@ export default async function AdminOverviewPage() {
         description="Accounts across the platform and what's happened recently."
         actions={<ButtonLink href="/admin/users/new" variant="accent">Create account</ButtonLink>}
       />
-      <div className="grid gap-6 px-5 py-8 sm:px-8 lg:px-10">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 px-5 py-8 sm:px-8 lg:px-10">
         <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-panel border border-line bg-line lg:grid-cols-4">
           {tiles.map((t) => (
             <li key={t.label}>

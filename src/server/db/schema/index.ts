@@ -10,6 +10,7 @@ export * from "./audit";
 export * from "./auth";
 export * from "./shipping";
 export * from "./wallet";
+export * from "./pricing";
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   parent: one(users, { fields: [users.parentUserId], references: [users.id], relationName: "ownership" }),

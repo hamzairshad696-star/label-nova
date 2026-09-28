@@ -1,5 +1,5 @@
-# LOCAL test database only (localhost). Removes accounts created by the test suites, including their
-# shipments and ledger rows. Bypasses the append-only trigger and FKs for this session only — never do this elsewhere.
+# LOCAL test database only (localhost). Removes test accounts (*.test), their shipments and ledger rows, and
+# all pricing catalog rows. Bypasses the append-only triggers and FKs for this one transaction — never do this elsewhere.
 psql postgres://ln:ln@localhost:5432/labelnova -q <<'SQL'
 begin;
 set local session_replication_role = replica;

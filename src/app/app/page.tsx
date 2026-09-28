@@ -50,7 +50,7 @@ export default async function DashboardPage() {
     return (
       <>
         <PageHeader title={`${ROLE_LABEL[role]} dashboard`} description={`Hello, ${firstName}. Here's your network.`} />
-        <div className="grid gap-6 px-5 py-8 sm:px-8 lg:px-10">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 px-5 py-8 sm:px-8 lg:px-10">
           <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-panel border border-line bg-line lg:grid-cols-3">
             <li className="bg-surface p-5">
               <p className="text-[0.875rem] text-ink-muted">Customers in your network</p>
@@ -139,7 +139,7 @@ async function CustomerDashboard({ actor, firstName }: { actor: Actor; firstName
           </div>
         }
       />
-      <div className="grid gap-6 px-5 py-8 sm:px-8 lg:px-10">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 px-5 py-8 sm:px-8 lg:px-10">
         <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-panel border border-line bg-line lg:grid-cols-4">
           {tiles.map((t) => (
             <li key={t.label}>

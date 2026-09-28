@@ -11,6 +11,10 @@ They expect `postgres://ln:ln@localhost:5432/labelnova` and a server on `http://
 | `authz-attack.py` | Replays genuine server-action requests (captured by `capture-action.mjs`) as signed-out, forged-cookie, customer, dealer and reseller callers. Includes a positive control proving replays execute |
 | `a11y-public.mjs`, `a11y-signed-in.mjs` | axe-core WCAG 2 A/AA + best practice on every public, auth and signed-in page, per role |
 | `customer-dashboard.mjs` | Honest empty states; balance, month spend and counts computed from real ledger/shipment rows; per-customer isolation; profile and password change with audit (failed attempts not logged); other devices signed out; `/update-user` cannot touch status, parent, email, verification or role; 390px layouts |
+| `pricing-and-wallet.mjs` | Carriers/services (label-only vs carrier postage), rule validation, live margin hints, overlap rejection, edit history before→after, deactivate/reactivate, DB-level no-delete/append-only; admin top-up and adjustments, below-zero refusal, customer sees entries |
+| `pricing-wallet-attack.py` | Customers, dealers, signed-out and forged callers can't touch prices or wallets; tampering rejected; idempotent replays; 10 concurrent debits can't overspend; 5 concurrent overlapping rules → 1 |
+| `reset-local-pricing.sh` | Clears the LOCAL pricing catalog |
+| `run-all-local.sh` | Every suite, in order, from a clean local state |
 | `reset-local-test-users.sh` | Removes `*.test` accounts from the LOCAL database (bypasses the ledger's append-only trigger for that one transaction) |
 | `mobile-keyboard.mjs` | 390px layouts without sideways scroll, keyboard-only sign-in order, drawer open/Escape/focus return |
 

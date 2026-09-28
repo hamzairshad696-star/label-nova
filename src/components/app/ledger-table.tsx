@@ -16,7 +16,7 @@ export interface LedgerRow {
 export function LedgerTable({ rows, empty }: { rows: LedgerRow[]; empty: string }) {
   if (rows.length === 0) return <p className="px-6 py-12 text-center text-[0.9375rem] text-ink-muted">{empty}</p>;
   return (
-    <div className="overflow-x-auto">
+    <div className="relative overflow-x-auto">
       <table className="w-full min-w-[620px] text-left text-[0.9375rem]">
         <thead className="bg-paper text-[0.8125rem] text-ink-muted">
           <tr>

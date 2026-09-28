@@ -15,7 +15,7 @@ export default async function WalletPage() {
   return (
     <>
       <PageHeader title="Wallet" description="Your prepaid balance. Each label is paid from it." />
-      <div className="grid gap-6 px-5 py-8 sm:px-8 lg:px-10">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 px-5 py-8 sm:px-8 lg:px-10">
         <div className="grid gap-px overflow-hidden rounded-panel border border-line bg-line md:grid-cols-[1.2fr_1fr_1.2fr]">
           <div className="bg-midnight p-6 text-white">
             <p className="text-[0.875rem] text-midnight-muted">Available balance</p>

@@ -61,7 +61,7 @@ export default async function UsersPage({ searchParams }: { searchParams: Promis
               <p className="mt-1 text-ink-muted">Create one to get started.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="relative overflow-x-auto">
               <table className="w-full min-w-[760px] text-left text-[0.9375rem]">
                 <thead className="bg-paper text-[0.8125rem] text-ink-muted">
                   <tr>

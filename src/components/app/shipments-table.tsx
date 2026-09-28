@@ -20,7 +20,7 @@ export interface ShipmentRow {
 
 export function ShipmentsTable({ rows }: { rows: ShipmentRow[] }) {
   return (
-    <div className="overflow-x-auto">
+    <div className="relative overflow-x-auto">
       <table className="w-full min-w-[720px] text-left text-[0.9375rem]">
         <thead className="bg-paper text-[0.8125rem] text-ink-muted">
           <tr>

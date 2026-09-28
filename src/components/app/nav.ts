@@ -18,6 +18,7 @@ export function navFor(area: "admin" | "app", role: RoleKey): ShellNavItem[] {
     return [
       { label: "Overview", href: "/admin", icon: "grid", exact: true },
       { label: "Users", href: "/admin/users", icon: "users" },
+      { label: "Pricing", href: "/admin/pricing", icon: "list" },
     ];
   }
   const account: ShellNavItem[] = [

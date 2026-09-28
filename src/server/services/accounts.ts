@@ -34,7 +34,7 @@ async function roleOf(tx: Tx | typeof db, userId: string): Promise<{ key: RoleKe
   return row ? { key: row.key as RoleKey, rank: row.rank } : null;
 }
 
-async function isInNetwork(tx: Tx | typeof db, ancestorId: string, userId: string): Promise<boolean> {
+export async function isInNetwork(tx: Tx | typeof db, ancestorId: string, userId: string): Promise<boolean> {
   const rows = await tx.execute<{ found: boolean }>(sql`
     with recursive tree as (
       select id from users where parent_user_id = ${ancestorId}

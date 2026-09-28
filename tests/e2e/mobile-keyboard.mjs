@@ -30,9 +30,10 @@ ok("Tab: → Sign in button", f4 === "Sign in", f4);
 await p.keyboard.press("Enter");
 await p.waitForURL((u) => u.pathname === "/admin", { timeout: 10000 });
 ok("keyboard-only sign-in lands admin on /admin", new URL(p.url()).pathname === "/admin");
-for (const path of ["/admin", "/admin/users", "/admin/users/new", `/admin/users/${custId}`, "/app"]) {
+const ruleId = q("select id from pricing_rules order by created_at limit 1");
+for (const path of ["/admin", "/admin/users", "/admin/users/new", `/admin/users/${custId}`, "/admin/pricing", "/admin/pricing/history", `/admin/pricing/rules/${ruleId}`, "/app"]) {
   await p.goto(B + path); await p.waitForTimeout(250);
-  ok(`${path.replace(custId, ":id")}: no sideways scroll`, (await overflow(p)) === 0, `${await overflow(p)}px`);
+  ok(`${path.replace(custId, ":id").replace(ruleId, ":rule")}: no sideways scroll`, (await overflow(p)) === 0, `${await overflow(p)}px`);
 }
 await p.goto(B + "/admin/users"); await p.screenshot({ path: "/tmp/m-users.png" });
 const tableScrolls = await p.evaluate(() => { const d = document.querySelector("table")?.parentElement; return d ? d.scrollWidth > d.clientWidth && getComputedStyle(d).overflowX === "auto" : false; });
